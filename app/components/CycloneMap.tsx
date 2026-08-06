@@ -87,10 +87,20 @@ export function CycloneMap({ storm, activePoint }: Props) {
       {storm.track.map((point, index) => point.radiusKm ? <polygon key={`range-${index}`} ref={(element) => { rangeNodes.current[index] = element; }} className={`storm-range ${point.radiusType}`} /> : null)}
       <polyline ref={observedLine} className="observed-track" />
       <polyline ref={forecastLine} className="forecast-track" />
-      {storm.track.map((point, index) => <circle key={`${point.lng}-${point.lat}-${index}`} ref={(element) => { pointNodes.current[index] = element; }} className={point.kind === "forecast" ? "forecast-point" : "observed-point"} r={point.kind === "forecast" ? 5 : 6} />)}
+      {storm.track.map((point, index) => <circle key={`${point.lng}-${point.lat}-${index}`} ref={(element) => { pointNodes.current[index] = element; }} className={`${point.kind === "forecast" ? "forecast-point" : "observed-point"} ${windIntensity(point.wind)}`} r={point.kind === "forecast" ? 4.5 : 5} />)}
       <circle ref={activeNode} className="active-point" r="11" />
     </svg>
   </div>;
+}
+
+function windIntensity(wind: number | null) {
+  if (wind === null) return "intensity-unknown";
+  if (wind < 34) return "intensity-depression";
+  if (wind < 48) return "intensity-storm";
+  if (wind < 64) return "intensity-severe";
+  if (wind < 85) return "intensity-typhoon";
+  if (wind < 105) return "intensity-very-strong";
+  return "intensity-violent";
 }
 
 function circleCoordinates(latitude: number, longitude: number, radiusKm: number): [number, number][] {

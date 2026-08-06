@@ -75,7 +75,7 @@ export default function Home() {
         <div className="timeline"><div><div><span>{point.kind === "forecast" ? "예보 시점" : "경로 시점"}</span><b>{point.time}</b></div><span>{pointIndex + 1} / {selectedStorm.track.length}</span></div><input aria-label="경로 시점" type="range" min="0" max={selectedStorm.track.length - 1} value={pointIndex} onChange={(event) => setActivePoint(Number(event.target.value))} /><div className="point-details"><span>{point.radiusType === "wind" ? `강풍 경계 약 ${Math.round(point.radiusKm ?? 0)} km` : point.radiusType === "probability" ? `예보 확률 원 약 ${Math.round(point.radiusKm ?? 0)} km` : `풍속 ${point.wind ? `${point.wind} kt` : "—"}`}</span><span>중심기압 {point.pressure ? `${point.pressure} hPa` : "—"}</span></div></div>
         </div>
       </section>
-      <div className="map-legend"><span className="line-swatch" />관측·분석 경로 {selectedStorm.status === "active" && <><span className="forecast-swatch" />예보 경로 <span className="wind-range-swatch" />강풍 경계 <span className="probability-range-swatch" />70% 확률 원</>} <span className="dot-swatch" />선택 시점</div>
+      <div className="map-legend"><span className="line-swatch" />관측·분석 경로 {selectedStorm.status === "active" && <><span className="forecast-swatch" />예보 경로 <span className="wind-range-swatch" />강풍 경계 <span className="probability-range-swatch" />70% 확률 원</>} <span className="intensity-swatch" />지점 색 = 풍속 <span className="dot-swatch" />선택 시점</div>
     </main>
   );
 }
