@@ -30,8 +30,12 @@ const worker = {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/map-assets/")) {
-      const upstreamPath = url.pathname.slice("/map-assets".length);
-      const upstreamUrl = new URL(`${upstreamPath}${url.search}`, "https://tiles.openfreemap.org");
+      const isCarto = url.pathname.startsWith("/map-assets/carto/");
+      const upstreamPath = url.pathname.slice(isCarto ? "/map-assets/carto".length : "/map-assets".length);
+      const upstreamUrl = new URL(
+        `${upstreamPath}${url.search}`,
+        isCarto ? "https://basemaps.cartocdn.com" : "https://tiles.openfreemap.org",
+      );
       return fetch(new Request(upstreamUrl, request));
     }
 

@@ -8,28 +8,23 @@ import type { Storm } from "../data/storms";
 import { displayStormName } from "../data/typhoon-names-ko";
 
 type Props = { storm: Storm; activePoint: number };
-const mapAssetOrigin = "https://tiles.openfreemap.org/";
 const mapStyle = {
   version: 8 as const,
   sources: {
-    openmaptiles: {
-      type: "vector" as const,
-      url: "/map-assets/planet",
-      attribution: "© OpenStreetMap contributors · OpenFreeMap",
+    basemap: {
+      type: "raster" as const,
+      tiles: ["/map-assets/carto/dark_nolabels/{z}/{x}/{y}.png"],
+      tileSize: 256,
+      maxzoom: 8,
+      attribution: "© OpenStreetMap contributors © CARTO",
     },
   },
   layers: [
     {
-      id: "land",
-      type: "background" as const,
-      paint: { "background-color": "#24343d" },
-    },
-    {
-      id: "water",
-      type: "fill" as const,
-      source: "openmaptiles",
-      "source-layer": "water",
-      paint: { "fill-color": "#101f2c" },
+      id: "basemap",
+      type: "raster" as const,
+      source: "basemap",
+      paint: { "raster-saturation": -0.25, "raster-contrast": 0.08 },
     },
   ],
 };
@@ -59,11 +54,6 @@ export function CycloneMap({ storm, activePoint }: Props) {
       zoom: 1.8,
       attributionControl: true,
       renderWorldCopies: false,
-      transformRequest: (url) => ({
-        url: url.startsWith(mapAssetOrigin)
-          ? `/map-assets/${url.slice(mapAssetOrigin.length)}`
-          : url,
-      }),
     });
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
