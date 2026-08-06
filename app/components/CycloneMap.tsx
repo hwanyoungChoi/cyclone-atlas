@@ -8,9 +8,21 @@ import type { Storm } from "../data/storms";
 import { displayStormName } from "../data/typhoon-names-ko";
 
 type Props = { storm: Storm; activePoint: number };
-// OpenFreeMap's Fiord style gives the route enough contrast without requiring a paid API key.
-// The rendering engine remains MapLibre, so a hosted Mapbox style can later be swapped in directly.
-const mapStyle = "https://tiles.openfreemap.org/styles/fiord";
+// Use OpenStreetMap raster tiles directly. This avoids external style, sprite,
+// and vector-tile endpoints that can fail independently in production.
+const mapStyle = {
+  version: 8 as const,
+  sources: {
+    openstreetmap: {
+      type: "raster" as const,
+      tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution: "© OpenStreetMap contributors",
+    },
+  },
+  layers: [{ id: "openstreetmap", type: "raster" as const, source: "openstreetmap" }],
+};
 
 // Vinext does not automatically copy MapLibre's sibling worker module into
 // Cloudflare's static asset bundle. Importing its URL makes Vite emit it.
