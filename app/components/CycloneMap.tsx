@@ -9,7 +9,8 @@ import { displayStormName } from "../data/typhoon-names-ko";
 
 type Props = { storm: Storm; activePoint: number };
 const mapAssetOrigin = "https://tiles.openfreemap.org/";
-const mapStyle = "/map-assets/styles/fiord";
+const useMapProxy = process.env.NODE_ENV === "production";
+const mapStyle = useMapProxy ? "/map-assets/styles/fiord" : `${mapAssetOrigin}styles/fiord`;
 
 // Vinext does not automatically copy MapLibre's sibling worker module into
 // Cloudflare's static asset bundle. Importing its URL makes Vite emit it.
@@ -36,11 +37,13 @@ export function CycloneMap({ storm, activePoint }: Props) {
       zoom: 1.8,
       attributionControl: true,
       renderWorldCopies: false,
-      transformRequest: (url) => ({
-        url: url.startsWith(mapAssetOrigin)
-          ? `/map-assets/${url.slice(mapAssetOrigin.length)}`
-          : url,
-      }),
+      transformRequest: useMapProxy
+        ? (url) => ({
+            url: url.startsWith(mapAssetOrigin)
+              ? `/map-assets/${url.slice(mapAssetOrigin.length)}`
+              : url,
+          })
+        : undefined,
     });
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
