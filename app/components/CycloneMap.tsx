@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Storm } from "../data/storms";
 import { displayStormName } from "../data/typhoon-names-ko";
@@ -10,6 +11,10 @@ type Props = { storm: Storm; activePoint: number };
 // OpenFreeMap's Fiord style gives the route enough contrast without requiring a paid API key.
 // The rendering engine remains MapLibre, so a hosted Mapbox style can later be swapped in directly.
 const mapStyle = "https://tiles.openfreemap.org/styles/fiord";
+
+// Vinext does not automatically copy MapLibre's sibling worker module into
+// Cloudflare's static asset bundle. Importing its URL makes Vite emit it.
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 export function CycloneMap({ storm, activePoint }: Props) {
   const node = useRef<HTMLDivElement>(null);
