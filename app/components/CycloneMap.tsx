@@ -34,7 +34,10 @@ export function CycloneMap({ storm, activePoint }: Props) {
       renderWorldCopies: false,
     });
     map.addControl(new maplibregl.NavigationControl(), "top-right");
-    map.on("load", () => setIsReady(true));
+    map.on("load", () => {
+      map.setProjection({ type: "globe" });
+      setIsReady(true);
+    });
     mapRef.current = map;
     return () => { map.remove(); mapRef.current = null; };
   }, []);
