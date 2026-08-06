@@ -47,14 +47,14 @@ export default function Home() {
   function selectStorm(storm: Storm) { setSelectedId(storm.id); setActivePoint(defaultPoint(storm)); }
   function selectBasin(nextBasin: Basin) { setBasin(nextBasin); const nextStorm = stormYear?.storms.find((storm) => nextBasin === "all" || storm.basin === nextBasin); setSelectedId(nextStorm?.id ?? null); }
 
-  if (!selectedStorm || !stormYear || year === null) return <main className="loading-screen"><strong>Cyclone Atlas</strong><span>태풍 기록을 불러오는 중입니다…</span></main>;
+  if (!selectedStorm || !stormYear || year === null) return <main className="loading-screen"><h1>태풍 경로·태풍 과거 경로 지도</h1><strong>Cyclone Atlas</strong><span>태풍 기록을 불러오는 중입니다…</span></main>;
   const pointIndex = Math.min(activePoint, selectedStorm.track.length - 1);
   const point = selectedStorm.track[pointIndex];
   return (
     <main className="app-shell">
       <section className="map-area"><CycloneMap storm={selectedStorm} activePoint={activePoint} /></section>
       <aside className="sidebar">
-        <header className="brand"><span className="brand-mark"><i /><i /><i /></span><span>Cyclone Atlas</span><small>GLOBAL CYCLONE TRACKER</small></header>
+        <header className="brand"><span className="brand-mark"><i /><i /><i /></span><h1>Cyclone Atlas<small>태풍 경로 · 태풍 과거 경로 지도</small></h1></header>
         <div className="filter-row">
           <label><span>연도</span><select value={year} onChange={(event) => setYear(Number(event.target.value))}>{years.map((item) => <option key={item} value={item}>{item}년</option>)}</select></label>
           <label><span>해역</span><select value={basin} onChange={(event) => selectBasin(event.target.value as Basin)}>{Object.entries(basinLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>

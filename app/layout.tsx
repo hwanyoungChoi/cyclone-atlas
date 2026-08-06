@@ -13,17 +13,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "전 세계 태풍 경로 지도 | Cyclone Atlas",
-  description: "태풍·허리케인·사이클론의 과거 경로를 연도별로 탐색하는 글로벌 태풍 지도입니다.",
+  metadataBase: new URL("https://cyclone.conychoi.dev"),
+  title: "태풍 경로·태풍 과거 경로 지도 | Cyclone Atlas",
+  description: "태풍 경로와 태풍 과거 경로를 연도별 지도에서 확인하세요. 전 세계 태풍·허리케인·사이클론의 관측 경로와 현재 예보를 제공합니다.",
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
   openGraph: {
-    title: "전 세계 태풍 경로 지도 | Cyclone Atlas",
-    description: "태풍·허리케인·사이클론의 모든 경로를 지도에서 탐색하세요.",
+    type: "website",
+    locale: "ko_KR",
+    url: "/",
+    siteName: "Cyclone Atlas",
+    title: "태풍 경로·태풍 과거 경로 지도 | Cyclone Atlas",
+    description: "전 세계 태풍의 과거 경로와 현재 예보를 연도별 지도에서 확인하세요.",
     images: ["/og.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "전 세계 태풍 경로 지도 | Cyclone Atlas",
-    description: "태풍·허리케인·사이클론의 모든 경로를 지도에서 탐색하세요.",
+    title: "태풍 경로·태풍 과거 경로 지도 | Cyclone Atlas",
+    description: "전 세계 태풍의 과거 경로와 현재 예보를 연도별 지도에서 확인하세요.",
     images: ["/og.png"],
   },
   icons: {
@@ -42,6 +53,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": "https://cyclone.conychoi.dev/#website",
+              name: "Cyclone Atlas",
+              alternateName: "태풍 경로 지도",
+              url: "https://cyclone.conychoi.dev/",
+              inLanguage: "ko-KR",
+              description: "태풍 경로와 태풍 과거 경로를 연도별로 탐색하는 전 세계 태풍 지도",
+            }),
+          }}
+        />
         {children}
       </body>
     </html>
