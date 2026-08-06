@@ -8,20 +8,30 @@ import type { Storm } from "../data/storms";
 import { displayStormName } from "../data/typhoon-names-ko";
 
 type Props = { storm: Storm; activePoint: number };
-// Use OpenStreetMap raster tiles directly. This avoids external style, sprite,
-// and vector-tile endpoints that can fail independently in production.
+const mapAssetOrigin = "https://tiles.openfreemap.org/";
 const mapStyle = {
   version: 8 as const,
   sources: {
-    openstreetmap: {
-      type: "raster" as const,
-      tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-      tileSize: 256,
-      maxzoom: 19,
-      attribution: "© OpenStreetMap contributors",
+    openmaptiles: {
+      type: "vector" as const,
+      url: "/map-assets/planet",
+      attribution: "© OpenStreetMap contributors · OpenFreeMap",
     },
   },
-  layers: [{ id: "openstreetmap", type: "raster" as const, source: "openstreetmap" }],
+  layers: [
+    {
+      id: "land",
+      type: "background" as const,
+      paint: { "background-color": "#24343d" },
+    },
+    {
+      id: "water",
+      type: "fill" as const,
+      source: "openmaptiles",
+      "source-layer": "water",
+      paint: { "fill-color": "#101f2c" },
+    },
+  ],
 };
 
 // Vinext does not automatically copy MapLibre's sibling worker module into
@@ -49,6 +59,11 @@ export function CycloneMap({ storm, activePoint }: Props) {
       zoom: 1.8,
       attributionControl: true,
       renderWorldCopies: false,
+      transformRequest: (url) => ({
+        url: url.startsWith(mapAssetOrigin)
+          ? `/map-assets/${url.slice(mapAssetOrigin.length)}`
+          : url,
+      }),
     });
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
