@@ -41,7 +41,7 @@ function parseJma(text) {
     const header = lines[index]; if (!header.startsWith("66666")) continue;
     const count = Number(header.slice(12, 15).trim()); const internationalId = header.slice(6, 10).trim(); const name = header.slice(30, 50).trim() || "UNNAMED"; const track = [];
     for (let offset = 1; offset <= count; offset += 1) {
-      const match = lines[index + offset]?.match(/^(\d{8})\s+002\s+(\d)\s+(\d{3})\s+(\d{4})\s+(\d{4})(?:\s+(\d{3}))?/); if (!match) continue;
+      const match = lines[index + offset]?.match(/^(\d{8})\s+002\s+(\d)\s+(\d{3})\s+(\d{4})\s+(\d{3,4})(?:\s+(\d{3}))?/); if (!match) continue;
       const [, timestamp, , latitude, longitude, pressure, wind] = match; const yy = Number(timestamp.slice(0, 2)); const year = yy >= 51 ? 1900 + yy : 2000 + yy;
       track.push({ time: `${year}-${timestamp.slice(2, 4)}-${timestamp.slice(4, 6)} ${timestamp.slice(6, 8)}:00 UTC`, lng: Number(longitude) / 10, lat: Number(latitude) / 10, wind: Number(wind) || null, pressure: Number(pressure) || null });
     }
