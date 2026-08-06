@@ -30,9 +30,12 @@ const worker = {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/map-assets/")) {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return new Response(null, { status: 405 });
+      }
       const upstreamPath = url.pathname.slice("/map-assets".length);
       const upstreamUrl = new URL(`${upstreamPath}${url.search}`, "https://tiles.openfreemap.org");
-      return fetch(new Request(upstreamUrl, request));
+      return fetch(upstreamUrl);
     }
 
     if (url.pathname === "/_vinext/image") {
