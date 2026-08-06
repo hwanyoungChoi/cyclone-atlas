@@ -11,8 +11,8 @@ mkdirSync(temporary, { recursive: true });
 mkdirSync(output, { recursive: true });
 download("https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/Besttracks/bst_all.zip", files.jmaZip);
 execFileSync("unzip", ["-o", files.jmaZip, "-d", temporary], { stdio: "inherit" });
-download("https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-02272026.txt", files.atlantic);
-download("https://www.nhc.noaa.gov/data/hurdat/hurdat2-nepac-1949-2025-02272026.txt", files.pacific);
+download(latestHurdatUrl("hurdat2-1851"), files.atlantic);
+download(latestHurdatUrl("hurdat2-nepac-1949"), files.pacific);
 
 const jmaStorms = parseJma(readFileSync(files.jma, "utf8"));
 const currentYear = new Date().getUTCFullYear();
@@ -26,6 +26,14 @@ writeFileSync(new URL("index.json", output), JSON.stringify({ years, sources: ["
 console.log(`Wrote ${storms.length} storms across ${years.length} years.`);
 
 function download(url, destination) { execFileSync("curl", ["-L", "--fail", "--silent", "--show-error", "-o", destination, url], { stdio: "inherit" }); }
+
+function latestHurdatUrl(prefix) {
+  const index = execFileSync("curl", ["-L", "--fail", "--silent", "--show-error", "https://www.nhc.noaa.gov/data/hurdat/"], { encoding: "utf8" });
+  const filenames = [...index.matchAll(new RegExp(`${prefix}-\\d{4}-\\d+\\.txt`, "g"))].map((match) => match[0]);
+  const filename = filenames.sort().at(-1);
+  if (!filename) throw new Error(`No HURDAT2 file found for ${prefix}`);
+  return `https://www.nhc.noaa.gov/data/hurdat/${filename}`;
+}
 
 function parseJma(text) {
   const lines = text.split(/\r?\n/); const storms = [];

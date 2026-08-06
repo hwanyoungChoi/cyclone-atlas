@@ -54,7 +54,7 @@ export default function Home() {
     <main className="app-shell">
       <section className="map-area"><CycloneMap storm={selectedStorm} activePoint={activePoint} /></section>
       <aside className="sidebar">
-        <header className="brand"><span className="brand-mark">◌</span><span>Cyclone Atlas</span><small>전 세계 태풍 경로 지도</small></header>
+        <header className="brand"><span className="brand-mark"><i /><i /><i /></span><span>Cyclone Atlas</span><small>GLOBAL CYCLONE TRACKER</small></header>
         <div className="filter-row">
           <label><span>연도</span><select value={year} onChange={(event) => setYear(Number(event.target.value))}>{years.map((item) => <option key={item} value={item}>{item}년</option>)}</select></label>
           <label><span>해역</span><select value={basin} onChange={(event) => selectBasin(event.target.value as Basin)}>{Object.entries(basinLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
@@ -63,7 +63,7 @@ export default function Home() {
         <footer>현재·예보: 일본 기상청 방재정보 · 과거 확정 경로: JMA RSMC Tokyo / NOAA NHC</footer>
       </aside>
       <section className="storm-panel" aria-live="polite">
-        <div className="storm-panel-top"><div><span className="eyebrow">{basinLabels[selectedStorm.basin]}</span><h1>{selectedStorm.number} {displayStormName(selectedStorm)}</h1><p>{selectedStorm.name} · {selectedStorm.dates}</p></div><span className={`status ${selectedStorm.status}`}>{selectedStorm.status === "active" ? "진행 중" : selectedStorm.status === "provisional" ? "속보 분석" : "기록 완료"}</span></div>
+        <div className="storm-panel-top"><div><span className="eyebrow"><i /> {basinLabels[selectedStorm.basin]}</span><h1>{selectedStorm.number} {displayStormName(selectedStorm)}</h1><p>{selectedStorm.name} · {selectedStorm.dates}</p></div><span className={`status ${selectedStorm.status}`}>{selectedStorm.status === "active" ? "진행 중" : selectedStorm.status === "provisional" ? "속보 분석" : "기록 완료"}</span></div>
         <div className="metrics"><div><span>최대 풍속</span><b>{selectedStorm.peakWind ? `${selectedStorm.peakWind} kt` : "기록 없음"}</b></div><div><span>최저 중심기압</span><b>{selectedStorm.peakPressure ? `${selectedStorm.peakPressure} hPa` : "기록 없음"}</b></div></div>
         <div className="timeline"><div><div><span>{point.kind === "forecast" ? "예보 시점" : "경로 시점"}</span><b>{point.time}</b></div><span>{pointIndex + 1} / {selectedStorm.track.length}</span></div><input aria-label="경로 시점" type="range" min="0" max={selectedStorm.track.length - 1} value={pointIndex} onChange={(event) => setActivePoint(Number(event.target.value))} /><div className="point-details"><span>{point.radiusType === "wind" ? `강풍 경계 약 ${Math.round(point.radiusKm ?? 0)} km` : point.radiusType === "probability" ? `예보 확률 원 약 ${Math.round(point.radiusKm ?? 0)} km` : `풍속 ${point.wind ? `${point.wind} kt` : "—"}`}</span><span>중심기압 {point.pressure ? `${point.pressure} hPa` : "—"}</span></div></div>
       </section>

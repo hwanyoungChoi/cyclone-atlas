@@ -1,8 +1,10 @@
-# vinext-starter
+# Cyclone Atlas
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+전 세계 태풍·허리케인·사이클론의 과거 경로와 현재 예보를 지도에서 탐색하는 웹 앱입니다.
+
+## 자동 데이터 갱신
+
+`.github/workflows/update-storm-data.yml`이 매일 11:17 KST에 공식 원본을 다시 수집합니다. 데이터가 바뀐 경우에만 `public/data`를 자동 커밋합니다. 공개 GitHub 저장소의 표준 GitHub Actions 러너는 무료입니다.
 
 ## Prerequisites
 

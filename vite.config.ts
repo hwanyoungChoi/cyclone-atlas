@@ -44,6 +44,9 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    // MapLibre loads its Web Worker through an ESM URL. Keeping it out of Vite's
+    // dependency pre-bundle preserves that URL during local development.
+    optimizeDeps: { exclude: ["maplibre-gl"] },
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,

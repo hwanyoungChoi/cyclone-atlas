@@ -7,7 +7,9 @@ import type { Storm } from "../data/storms";
 import { displayStormName } from "../data/typhoon-names-ko";
 
 type Props = { storm: Storm; activePoint: number };
-const mapStyle = { version: 8 as const, sources: { carto: { type: "raster" as const, tiles: ["https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"], tileSize: 256, attribution: "© OpenStreetMap contributors © CARTO" } }, layers: [{ id: "carto", type: "raster" as const, source: "carto" }] };
+// OpenFreeMap's Fiord style gives the route enough contrast without requiring a paid API key.
+// The rendering engine remains MapLibre, so a hosted Mapbox style can later be swapped in directly.
+const mapStyle = "https://tiles.openfreemap.org/styles/fiord";
 
 export function CycloneMap({ storm, activePoint }: Props) {
   const node = useRef<HTMLDivElement>(null);
@@ -23,7 +25,14 @@ export function CycloneMap({ storm, activePoint }: Props) {
 
   useEffect(() => {
     if (!node.current || mapRef.current) return;
-    const map = new maplibregl.Map({ container: node.current, style: mapStyle, center: [128, 20], zoom: 1.8, attributionControl: true });
+    const map = new maplibregl.Map({
+      container: node.current,
+      style: mapStyle,
+      center: [128, 20],
+      zoom: 1.8,
+      attributionControl: true,
+      renderWorldCopies: false,
+    });
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => setIsReady(true));
     mapRef.current = map;
