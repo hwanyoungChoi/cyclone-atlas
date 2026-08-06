@@ -8,26 +8,8 @@ import type { Storm } from "../data/storms";
 import { displayStormName } from "../data/typhoon-names-ko";
 
 type Props = { storm: Storm; activePoint: number };
-const mapStyle = {
-  version: 8 as const,
-  sources: {
-    basemap: {
-      type: "raster" as const,
-      tiles: ["/map-assets/carto/dark_nolabels/{z}/{x}/{y}.png"],
-      tileSize: 256,
-      maxzoom: 8,
-      attribution: "© OpenStreetMap contributors © CARTO",
-    },
-  },
-  layers: [
-    {
-      id: "basemap",
-      type: "raster" as const,
-      source: "basemap",
-      paint: { "raster-saturation": -0.25, "raster-contrast": 0.08 },
-    },
-  ],
-};
+const mapAssetOrigin = "https://tiles.openfreemap.org/";
+const mapStyle = "/map-assets/styles/fiord";
 
 // Vinext does not automatically copy MapLibre's sibling worker module into
 // Cloudflare's static asset bundle. Importing its URL makes Vite emit it.
@@ -54,6 +36,11 @@ export function CycloneMap({ storm, activePoint }: Props) {
       zoom: 1.8,
       attributionControl: true,
       renderWorldCopies: false,
+      transformRequest: (url) => ({
+        url: url.startsWith(mapAssetOrigin)
+          ? `/map-assets/${url.slice(mapAssetOrigin.length)}`
+          : url,
+      }),
     });
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
